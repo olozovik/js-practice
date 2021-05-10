@@ -19,23 +19,48 @@ const pizza = {
   size: '',
   stuffings: [],
   sauces: [],
-  getPizza: function () {
+
+  getPizza() {
     return {
       Размер: this.size,
       Добавки: this.stuffings,
       Соусы: this.sauces,
     };
   },
-  getStuffing: function (stuffing) {
-    for (const key of Object.keys(STUFFING)) {
-      if (stuffing.toUpperCase() === key.toUpperCase()) {
-        this.stuffings.push(key.toUpperCase());
+
+  // Метод для выборы размера пиццы
+
+  addStuffing(stuffing) {
+    for (const item of this.stuffings) {
+      if (stuffing.toUpperCase() === item.toUpperCase()) {
+        console.log('Такая добавка уже есть');
+        return;
+      }
+    }
+    for (const item of Object.keys(STUFFING)) {
+      if (stuffing.toUpperCase() === item.toUpperCase()) {
+        this.stuffings.push(stuffing.toUpperCase());
         return;
       }
     }
     console.log('Нет такой добавки');
   },
-  getSuaces: function (sauce) {
+
+  removeStuffing(stuffing) {
+    if (this.stuffings.length < 1) {
+      console.log('В пицце еще нет добавок');
+      return;
+    }
+    for (let i = 0; i < this.stuffings.length; i += 1) {
+      if (stuffing.toUpperCase() === this.stuffings[i].toUpperCase()) {
+        this.stuffings.splice(i, 1);
+        return;
+      }
+    }
+    console.log('Такой добавки нет в пицце');
+  },
+
+  addSuaces(sauce) {
     for (const item of this.sauces) {
       if (sauce.toUpperCase() === item.toUpperCase()) {
         console.log('Такой соус уже добавлен');
@@ -51,12 +76,31 @@ const pizza = {
     }
     console.log('Нет такого соуса');
   },
+
+  removeSuaces(sauce) {
+    if (this.sauces.length < 1) {
+      console.log('В пицце еще нет соусов');
+      return;
+    }
+    for (let i = 0; i < this.sauces.length; i += 1) {
+      if (sauce.toUpperCase() === this.sauces[i].toUpperCase()) {
+        this.sauces.splice(i, 1);
+        return;
+      }
+    }
+    console.log('Такого соуса нет в пицце');
+  },
 };
 
-pizza.getStuffing('Tomato');
-// console.log('Добавки:', pizza.stuffings);
+// console.table(pizza.getPizza());
+// pizza.removeStuffing();
+// pizza.addStuffing('beacon');
+// pizza.addStuffing('tomato');
+// // pizza.removeStuffing('beacoN');
+// console.table(pizza.getPizza());
 
-pizza.getSuaces('KETChUP');
-// console.log('Соусы:', pizza.sauces);
-
+pizza.addSuaces('Mustard');
+pizza.addSuaces('BoloGnese');
+console.table(pizza.getPizza());
+pizza.removeSuaces('mustard');
 console.table(pizza.getPizza());
