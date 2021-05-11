@@ -16,19 +16,31 @@ const SAUCES = {
 };
 
 const pizza = {
-  size: '',
+  _size: '',
   stuffings: [],
   sauces: [],
 
   getPizza() {
     return {
-      Размер: this.size,
+      Размер: this._size,
       Добавки: this.stuffings,
       Соусы: this.sauces,
     };
   },
 
-  // Метод для выборы размера пиццы
+  get size() {
+    return `Размер пиццы: ${this._size}`;
+  },
+
+  set size(size) {
+    for (const item of Object.keys(SIZES)) {
+      if (size.toUpperCase() === item.toUpperCase()) {
+        this._size = size.toUpperCase();
+        return;
+      }
+    }
+    console.log('Такого размера нет');
+  },
 
   addStuffing(stuffing) {
     for (const item of this.stuffings) {
@@ -60,7 +72,7 @@ const pizza = {
     console.log('Такой добавки нет в пицце');
   },
 
-  addSuaces(sauce) {
+  addSuace(sauce) {
     for (const item of this.sauces) {
       if (sauce.toUpperCase() === item.toUpperCase()) {
         console.log('Такой соус уже добавлен');
@@ -77,7 +89,7 @@ const pizza = {
     console.log('Нет такого соуса');
   },
 
-  removeSuaces(sauce) {
+  removeSuace(sauce) {
     if (this.sauces.length < 1) {
       console.log('В пицце еще нет соусов');
       return;
@@ -90,17 +102,112 @@ const pizza = {
     }
     console.log('Такого соуса нет в пицце');
   },
+
+  getTotalPrice() {
+    let total = 0;
+
+    if (this._size) {
+      total += SIZES[this._size]['price'];
+    }
+
+    for (const item of this.stuffings) {
+      total += STUFFING[item]['price'];
+    }
+    for (const item of this.sauces) {
+      total += SAUCES[item]['price'];
+    }
+    total = total.toFixed(2);
+    return `Общая стоимость: ${total}`;
+  },
+
+  getCalories() {
+    let total = 0;
+
+    if (this._sizes) {
+      total += SIZES[this._size]['cal'];
+    }
+
+    for (const item of this.stuffings) {
+      total += STUFFING[item]['cal'];
+    }
+
+    for (const item of this.sauces) {
+      total += SAUCES[item]['cal'];
+    }
+
+    return `Всего калорий: ${total}`;
+  },
+
+  getTime() {
+    let time = 0;
+
+    if (this._size) {
+      time += SIZES[this._size]['time'];
+    }
+
+    for (const item of this.stuffings) {
+      time += STUFFING[item]['time'];
+    }
+
+    for (const item of this.sauces) {
+      time += SAUCES[item]['time'];
+    }
+
+    return `Время приготовления: ${time} минут`;
+  },
+
+  getPizzaInfo() {
+    const price = this.getTotalPrice();
+    const calories = this.getCalories();
+    const stuffings = this.stuffings.join(', ');
+    const sauses = this.sauces.join(', ');
+    const time = this.getTime();
+
+    const error = [];
+
+    if (!this._size) {
+      error.push('Не выбран размер пиццы');
+    }
+
+    if (stuffings.length < 1) {
+      error.push('В пицце нет добавок');
+    }
+
+    if (sauses.length < 1) {
+      error.push('В пиццу не добавлены соусы');
+    }
+
+    if (error.length > 0) {
+      return error;
+    }
+
+    return [
+      price,
+      calories,
+      pizza.size,
+      `Добавки: ${stuffings}`,
+      `Соусы: ${sauses}`,
+      time,
+    ];
+  },
 };
 
 // console.table(pizza.getPizza());
 // pizza.removeStuffing();
-// pizza.addStuffing('beacon');
+pizza.addStuffing('beacon');
 // pizza.addStuffing('tomato');
-// // pizza.removeStuffing('beacoN');
+// pizza.removeStuffing('beacoN');
 // console.table(pizza.getPizza());
 
-pizza.addSuaces('Mustard');
-pizza.addSuaces('BoloGnese');
+// pizza.addSuace('Mustard');
+pizza.addSuace('BoloGnese');
+// console.table(pizza.getPizza());
+// pizza.removeSuace('mustard');
+pizza.size = 'big';
+// console.log(pizza.size);
 console.table(pizza.getPizza());
-pizza.removeSuaces('mustard');
-console.table(pizza.getPizza());
+console.log(pizza.getTotalPrice());
+console.log(pizza.getCalories());
+console.log(pizza.getTime());
+
+console.table(pizza.getPizzaInfo());
